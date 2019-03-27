@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestAll(t *testing.T) {
@@ -31,4 +32,35 @@ func TestAll(t *testing.T) {
 	m3rval1, m3rval2 := Must3R("Hello", "World", nil)
 	assert.Equal("Hello", m3rval1)
 	assert.Equal("World", m3rval2)
+
+	m := new(testingmock)
+
+	TMust(m)(nil)
+	m.AssertExpectations(t)
+
+	m.On("Error", err).Return()
+	TMust(m)(err)
+	m.AssertExpectations(t)
+
+	TMust2(m)("Hello", nil)
+	m.AssertExpectations(t)
+
+	m.On("Error", err).Return()
+	TMust2(m)("Hello", err)
+	m.AssertExpectations(t)
+
+	TMust3(m)("Hello", "World", nil)
+	m.AssertExpectations(t)
+
+	m.On("Error", err).Return()
+	TMust3(m)("Hello", "World", err)
+	m.AssertExpectations(t)
+}
+
+type testingmock struct {
+	mock.Mock
+}
+
+func (t *testingmock) Error(args ...interface{}) {
+	t.Called(args...)
 }
