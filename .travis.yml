@@ -1,0 +1,14 @@
+language: go
+
+go:
+  - 1.12.x
+
+env:
+  - GO111MODULE=on CODECOV_TOKEN="fd83e40e-68af-4fb4-a09b-78b93c3aa87e"
+
+install: true
+
+go_import_path: github.com/xdefrag/must
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
